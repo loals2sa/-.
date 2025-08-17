@@ -1,0 +1,109 @@
+import requests
+import random
+import threading
+import time
+from uuid import uuid4
+from colorama import Fore, init  
+
+init(autoreset=True)
+
+# تم وضع التوكن و ID مباشرة هنا
+token = "8288996847:AAGtePY2zIODTY6NqGR_rWY4cOV9fBauSIY"
+ID = "7484188070"
+
+print("""
+شو بدك شكل اليوزر
+1 - HH_HH
+2 - _g_jak
+3 - hskg_
+
+""")
+pattern_choice = int(input("المطور فؤاد استمتع باليوزرات"))
+
+a = 0
+s = 0
+om = 'qwertyuioplkjhgfdsazxcvbnm'
+ooo = 'qwertyuiopalkjhgfdsazxcvbnm0987654321'
+
+url = 'https://i.instagram.com/api/v1/accounts/create/'
+headers = {
+    'Content-Length': '437',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Host': 'i.instagram.com',
+    'Connection': 'Keep-Alive',
+    'User-Agent': 'Instagram 6.12.1 Android (30/11; 480dpi; 1080x2298; HONOR; ANY-LX2; HNANY-Q1; qcom; en_IQ)',
+    'Accept-Language': 'en-IQ, en-US',
+    'X-IG-Connection-Type': 'WIFI',
+    'X-IG-Capabilities': 'AQ==',
+    'Accept-Encoding': 'gzip',
+}
+
+def af():
+    if pattern_choice == 1:
+        return random.choice(om) + random.choice(ooo) + "_" + random.choice(ooo) + random.choice(om)
+    
+    elif pattern_choice == 2:
+        first_char = "_"
+        second_char = random.choice(om)  
+        return first_char + second_char + "_" + random.choice(ooo) + random.choice(om)
+    
+    elif pattern_choice == 3:
+        return "_" + random.choice(om) + random.choice(ooo) + random.choice(ooo) + random.choice(om)
+
+    elif pattern_choice == 4:
+        return "#" + random.choice(om) + "_" + random.choice(ooo) + "#"
+
+    elif pattern_choice == 5:
+        return "_#" + random.choice(ooo) + "_" + random.choice(ooo) + "#"
+
+    else:
+        print(Fore.RED + "❌ اختيار غير صحيح! يرجى تشغيل البرنامج مرة أخرى واختيار رقم بين 1-3.")
+        exit()
+
+def a1():
+    global a, s
+    while True:
+        user = af()
+        data = {
+            "email": "abdo1@gmail.com",
+            "username": user,
+            "password": "Aa123456" + user,
+            "device_id": "android-" + str(uuid4()),
+            "guid": str(uuid4()),
+        }
+
+        try:
+            response = requests.post(url, headers=headers, data=data).text
+
+            if '"email_is_taken"' in response:
+                print(Fore.GREEN + f'Good User: {user}')  
+                a += 1
+
+                message = f'''
+-> Good User Instagram
+------------------------------------------
+-> User : {user}
+------------------------------------------
+-> def : @kali_Root_control
+------------------------------------------
+
+------------------------------------------'
+'''
+                requests.post(f'https://api.telegram.org/bot{token}/sendMessage', data={'chat_id': ID, 'text': message})
+            else:
+                s += 1
+
+            print(f"\r{Fore.GREEN}Good ✅ {a} | {Fore.RED}Ban ❌ {s}", end='', flush=True)
+            
+        except requests.exceptions.RequestException:
+            time.sleep(0.5)
+
+print(f"{Fore.GREEN}Good ✅ 0 | {Fore.RED}Ban ❌ 0\n")
+threads = []
+for _ in range(20):  
+    t = threading.Thread(target=a1)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
